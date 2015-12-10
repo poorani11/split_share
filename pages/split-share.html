@@ -1,1 +1,16 @@
-hello
+<div class ="container">
+    <h3 class="list-group-item title">SPLIT SHARE</h3>
+        <div ng-repeat="expense in expenses" class="list-group-item">
+        <input type="checkbox" ng-model="expense.done"/>
+        <input type="text" ng-model="expense.text" class="expense"/>
+    </div>
+    <div class="list-group-item" ng-show="expenseText">
+        <input type="checkbox" disabled="true" />
+        <input type="text" class="expense" placeholder="{{expenseText}}" disabled="true" />
+    </div>
+    <form ng-submit="addExpense()" class="list-group-item">
+        <input type="text" ng-model="expenseText" />
+        <input type="submit" />
+     </form>
+</div>
+
