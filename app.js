@@ -58,16 +58,17 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location', f
 splitshareApp.controller('homeController', ['$scope', function($scope){
     var fireData = new Firebase('https://angular-splitwise.firebaseio.com');
     $scope.expenses = [ 
-        {done:false,text:'first'},
-        {done:true,text:'second'},
-        {done:false,text:'third'}
+        {cost:'100',text:'first'},
+        {cost:'200',text:'second'},
+        {cost:'300',text:'third'}
      ];
     $scope.addExpense = function(){
         var newExpense ={
-            done:false,
+            cost:$scope.costInt,
             text:$scope.expenseText
         };
     $scope.expenses.push(newExpense);
-    $scope.expenseText = '';   
+    $scope.expenseText = ''; 
+    $scope.costInt = '';  
     };
 }]);
