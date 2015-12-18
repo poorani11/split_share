@@ -3,6 +3,9 @@
         <div ng-repeat="expense in expenses" class="list-group-item">
         <input type="text" ng-model="expense.text" class="expense"><span class="badge cost-badge">{{expense.cost}}</span></input>
     </div>
+    <div class = "list-group-item">
+        <input type="text"  class="expense">Total Expense:<span class="badge cost-badge">{{totalExpense()}}</span></input>
+    </div>
     <div class="list-group-item" ng-show="expenseText">
         <input type="text" class="expense" placeholder="{{expenseText}}" disabled="true" />
         <input type="text" class="cost" placeholder="{{costInt}}" disabled="true" />
