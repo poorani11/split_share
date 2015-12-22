@@ -40,7 +40,6 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location', f
     };
 
     $scope.signupSplit = function(){
-        console.log("ghfhg");
         ref.createUser({
           email    : $scope.user.email,
           password : $scope.user.password

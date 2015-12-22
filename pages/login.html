@@ -2,13 +2,21 @@
         <div class="jumbotron" style="padding-bottom:0px;">
             <h2>SPLITSHARE</h2>
         </div>
-        <form class="form-signin" role="form" ng-submit="loginSplit()">
-            <input type="email" class="form-control" placeholder="Email address" required="" autofocus="" ng-model = "user.email">
-            <input type="password" class="form-control" placeholder="Password" required="" ng-model = "user.password">
-            <label class="checkbox">
-                <a href="#/signup"> Sign Up</a>
+    <form class="form-signin" name="signinForm" role="form" ng-submit="loginSplit()">
+        <div class="form-group" ng-class="{ 'has-error' : signinForm.email.$invalid }">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" ng-model="user.email">
+            <p class="help-block" ng-show="signinForm.email.$invalid">Enter a valid email.</p>
+        </div>
+        <div class="form-group" ng-class="{ 'has-error' : signinForm.password.$invalid }">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" ng-model="user.password" ng-minlength="3">
+            <p class="help-block" ng-show="signinForm.password.$error.minlength">Min password length is 8 characters.</p>
+        </div>
+        <label class="checkbox">
+            <a href="#/signup"> Sign Up</a>
         </label>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
+        <button ng-disabled="!user.email || !user.password" type="submit" class="btn btn-lg btn-primary btn-block">SignIn</button>
+    </form>
  
     </div>
