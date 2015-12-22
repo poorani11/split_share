@@ -27,8 +27,8 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location', f
     
     $scope.loginSplit = function(){
         ref.authWithPassword({
-        email    : $scope.email,
-        password : $scope.password
+        email    : $scope.user.email,
+        password : $scope.user.password
         }, function(error, authData) {
         if (error) {
         console.log("Login Failed!", error);
@@ -40,15 +40,16 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location', f
     };
 
     $scope.signupSplit = function(){
+        console.log("ghfhg");
         ref.createUser({
-          email    : $scope.email,
-          password : $scope.password
+          email    : $scope.user.email,
+          password : $scope.user.password
         }, function(error, userData) {
           if (error) {
             console.log("Error creating user:", error);
           } else {
             console.log("Successfully created user account with uid:", userData.uid);
-            $scope.loginSplit();
+            $location.path('/splitsharelist');
             
           }
         });
