@@ -54,25 +54,22 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
         });
     };
 
-    $scope.signupSplit = function() {
-        if (!$scope.regForm.$invalid) {
-            var email = $scope.user.email;
-            var password = $scope.user.password;
-            if (email && password) {
-                auth.$createUser(email, password)
-                    .then(function() {
-                        // do things if success
-                        console.log('User creation success');
-                        CommonProp.setUser(user.password.email);
-                        $location.path('/splitsharelist');
-                    }, function(error) {
-                        // do things if failure
-                        console.log(error);
-                        $scope.regError = true;
-                        $scope.regErrorMessage = error.message;
-                    });
-            }
-        }
+    $scope.signupSplit = function(){
+        ref.createUser({
+          email    : $scope.user.email,
+          password : $scope.user.password
+        }, function(error, userData) {
+          if (error) {
+            console.log("Error creating user:", error);
+            $scope.regError = true;
+            $scope.regErrorMessage = error.message;
+          } else {
+            console.log("Successfully created user account with uid:", userData.uid);
+            // CommonProp.setUser(user.password.email);
+            $location.path('/splitsharelist');
+            
+          }
+        });
     };
 }]);
 
