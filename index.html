@@ -7,15 +7,14 @@
 
     <!--load bootstrap and fontawesome via CDN-->
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link href="http://getbootstrap.com/examples/signin/signin.css" rel="stylesheet">
+
+    <link href="nav.css" rel="stylesheet">
 
     <style>
         html, body, input, select, textarea
         {
             font-size: 1.05em;
-        }
-        .container
-        {
-            width:450px;
         }
         .expense{
             border: none;
@@ -55,17 +54,6 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-default">
-            <div class = "navbar-header">
-                <a class="navbar-brand" href="/">Split Share</a>
-            </div>
-
-            <ul class ="nav navbar-nav navbar-right">
-            <li><a href="#"><i class="fa fa-home"></i>Home</a>
-            </li>
-            </ul>
-        </nav>
-    </header>
         
     <div class="container">
         <div ng-view></div>

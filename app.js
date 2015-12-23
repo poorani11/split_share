@@ -25,7 +25,8 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location', f
     var ref = new Firebase("https://angular-splitwise.firebaseio.com");
     $scope.authObj = $firebaseAuth(ref);
     
-    $scope.loginSplit = function(){
+    $scope.loginSplit = function(e){
+        e.preventDefault();
         ref.authWithPassword({
         email    : $scope.user.email,
         password : $scope.user.password
@@ -39,21 +40,22 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location', f
         });
     };
 
-    $scope.signupSplit = function(){
-        ref.createUser({
-          email    : $scope.user.email,
-          password : $scope.user.password
-        }, function(error, userData) {
-          if (error) {
-            console.log("Error creating user:", error);
-          } else {
-            console.log("Successfully created user account with uid:", userData.uid);
-            $location.path('/splitsharelist');
-            
-          }
-        });
-    };    
-}]);
+    $scope.signupSplit = function() {
+        if (!$scope.regForm.$invalid) {
+            var email = $scope.user.email;
+            var password = $scope.user.password;
+            if (email && password) {
+                auth.$createUser(email, password)
+                    .then(function() {
+                        // do things if success
+                        console.log('User creation success');
+                    }, function(error) {
+                        // do things if failure
+                        console.log(error);
+                    });
+            }
+        }
+    };
 
 splitshareApp.controller('homeController', ['$scope', "$firebaseArray", function($scope, $firebaseArray){
     var fireData = new Firebase('https://angular-splitwise.firebaseio.com');
