@@ -49,9 +49,12 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location', f
                     .then(function() {
                         // do things if success
                         console.log('User creation success');
+                        $location.path('/splitsharelist');
                     }, function(error) {
                         // do things if failure
                         console.log(error);
+                        $scope.regError = true;
+                        $scope.regErrorMessage = error.message;
                     });
             }
         }
