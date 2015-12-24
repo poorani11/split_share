@@ -73,16 +73,19 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
     };
 }]);
 
-splitshareApp.controller('homeController', ['$scope', "$firebaseArray",'CommonProp', function($scope, $firebaseArray, CommonProp){
+splitshareApp.controller('homeController', ['$scope', "$firebaseArray",'$firebase','CommonProp', function($scope, $firebaseArray,$firebase, CommonProp){
     var fireData = new Firebase('https://angular-splitwise.firebaseio.com');
     $scope.username = CommonProp.getUser();
+    var user = CommonProp.getUser();
 
     var expenseRef = new Firebase('https://angular-splitwise.firebaseio.com/expenses');
-    $scope.expenses = $firebaseArray(expenseRef)
+    $scope.expenses = $firebaseArray(expenseRef.orderByChild("emailId").equalTo($scope.username));
+
     $scope.addExpense = function(){
         $scope.expenses.$add({
             cost:$scope.costInt,
-            text:$scope.expenseText
+            text:$scope.expenseText,
+            emailId: user, 
         });
     $scope.expenseText = ''; 
     $scope.costInt = '';  
