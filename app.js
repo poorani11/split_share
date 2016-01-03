@@ -28,13 +28,19 @@ splitshareApp.service('CommonProp',['$firebaseAuth','$location', function($fireb
  
     return {
         getUser: function() {
+        if(user == ''){
+            user = localStorage.getItem('userEmail');
+        }
             return user;
         },
         setUser: function(value) {
+            localStorage.setItem("userEmail", value);
             user = value;
         },
         logoutUser:function(){
             authObj.$unauth();
+            user='';
+            localStorage.removeItem('userEmail');
             console.log('done logout');
             $location.path('/');
         }
