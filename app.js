@@ -21,7 +21,9 @@ splitshareApp.config(function ($routeProvider){
 });
 
 // SERVICES
-splitshareApp.service('CommonProp', function() {
+splitshareApp.service('CommonProp',['$firebaseAuth','$location', function($firebaseAuth,$location) {
+    var ref = new Firebase("https://angular-splitwise.firebaseio.com");
+    var authObj = $firebaseAuth(ref);
     var user = '';
  
     return {
@@ -30,9 +32,14 @@ splitshareApp.service('CommonProp', function() {
         },
         setUser: function(value) {
             user = value;
+        },
+        logoutUser:function(){
+            authObj.$unauth();
+            console.log('done logout');
+            $location.path('/');
         }
     };
-});
+}]);
 
 // CONTROLLERS
 splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','CommonProp', function($scope, $firebaseAuth,$location,CommonProp) {
@@ -98,4 +105,7 @@ splitshareApp.controller('homeController', ['$scope', "$firebaseArray",'$firebas
 
         return count;
     };
+    $scope.logout = function(){
+    CommonProp.logoutUser();
+}
 }]);
