@@ -51,6 +51,13 @@ splitshareApp.service('CommonProp',['$firebaseAuth','$location', function($fireb
 splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','CommonProp', function($scope, $firebaseAuth,$location,CommonProp) {
     var ref = new Firebase("https://angular-splitwise.firebaseio.com");
     $scope.authObj = $firebaseAuth(ref);
+
+    authObj.$onAuth(function(authData) {
+        if(authData){
+            CommonProp.setUser(authData.password.email);
+            $location.path('/');
+        }
+    });
     $scope.user = {};
     $scope.loginSplit = function(){
         ref.authWithPassword({
@@ -96,9 +103,6 @@ splitshareApp.controller('homeController', ['$scope', "$firebaseArray",'$firebas
 
     var expenseRef = new Firebase('https://angular-splitwise.firebaseio.com/expenses');
     $scope.expenses = $firebaseArray(expenseRef.orderByChild("emailId").equalTo($scope.username));
-    if(!CommonProp.getUser()){
-        $location.path('/');
-    }
 
     $scope.addExpense = function(){
         $scope.expenses.$add({
