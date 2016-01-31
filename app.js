@@ -20,9 +20,20 @@ splitshareApp.config(function ($routeProvider){
     })
 });
 
+//CONSTANTS
+splitshareApp.constant('FirebaseUrl', 'https://angular-splitwise.firebaseio.com');
+
+//FACTORIES
+splitshareApp.factory('Auth', function($firebaseAuth,FirebaseUrl){
+    var ref = new Firebase(FirebaseUrl);
+    var auth = $firebaseAuth(ref);
+
+    return auth;
+  });
+
 // SERVICES
-splitshareApp.service('CommonProp',['$firebaseAuth','$location', function($firebaseAuth,$location) {
-    var ref = new Firebase("https://angular-splitwise.firebaseio.com");
+splitshareApp.service('CommonProp',['$firebaseAuth','$location','FirebaseUrl', function($firebaseAuth,$location,FirebaseUrl) {
+    var ref = new Firebase(FirebaseUrl);
     var authObj = $firebaseAuth(ref);
     var user = '';
  
@@ -51,9 +62,6 @@ splitshareApp.service('CommonProp',['$firebaseAuth','$location', function($fireb
 splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','CommonProp',"$firebaseArray","$firebaseObject", function($scope, $firebaseAuth,$location,CommonProp,$firebaseArray,$firebaseObject) {
     var ref = new Firebase("https://angular-splitwise.firebaseio.com");
     var users_ref = new Firebase("https://angular-splitwise.firebaseio.com/users");
-    $scope.authObj = $firebaseAuth(ref);
-
-    $scope.users = $firebaseArray(users_ref);
 
     $scope.authObj.$onAuth(function(authData) {
         if(authData){
@@ -70,9 +78,8 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
         if (error) {
         console.log("Login Failed!", error);
         } else {
-        CommonProp.setUser(user.password.email);
         console.log("Authenticated successfully with payload");
-        $location.path('/splitsharelist');
+        CommonProp.setUser(user.password.email);
         }
         });
     };
@@ -88,10 +95,7 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
             $scope.regErrorMessage = error.message;
           } else {
             console.log("Successfully created user account with uid:", userData.uid);
-            // CommonProp.setUser(user.password.email);
-            var userObj = $firebaseObject(users_ref.child(userData.uid));
-            userObj.$save();
-            $location.path('/splitsharelist');
+            $location.path('/');
             
           }
         });
