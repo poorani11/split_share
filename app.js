@@ -20,10 +20,9 @@ splitshareApp.config(function ($routeProvider){
     })
 });
 
-
 // SERVICES
-splitshareApp.service('CommonProp',['$firebaseAuth','$location', function($firebaseAuth,$location) {
-    var ref = new Firebase("https://angular-splitwise.firebaseio.com");
+splitshareApp.service('CommonProp',['$firebaseAuth','$location','FirebaseUrl', function($firebaseAuth,$location,FirebaseUrl) {
+    var ref = new Firebase(FirebaseUrl);
     var authObj = $firebaseAuth(ref);
     var user = '';
  
@@ -56,6 +55,7 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
 
     var isNewUser = true;
 
+
     $scope.authObj.$onAuth(function(authData) {
         if(authData && isNewUser){
             ref.child('users').child(authData.uid).set({
@@ -75,10 +75,9 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
         if (error) {
         console.log("Login Failed!", error);
         } else {
-        CommonProp.setUser(user.password.email);
         console.log("Authenticated successfully with payload");
+
         $location.path('/splitsharelist');    
-        
         }
         });
     };
@@ -94,8 +93,9 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
             $scope.regErrorMessage = error.message;
           } else {
             console.log("Successfully created user account with uid:", userData.uid);
-                // Users.saveUser(userData.uid);
                 $scope.loginSplit();            
+                $location.path('/');
+            
           }
         });
     };
