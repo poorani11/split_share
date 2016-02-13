@@ -20,18 +20,6 @@ splitshareApp.config(function ($routeProvider){
     })
 });
 
-//FACTORIES
-splitshareApp.factory('Users',['$firebaseAuth','$firebaseArray','$firebaseObject', function($firebaseAuth,$firebaseArray,$firebaseObject){
-    var users_ref = new Firebase("https://angular-splitwise.firebaseio.com/users");
-    var users = $firebaseArray(users_ref);
-    var Users={
-        getProfile: function(uid){
-            return $firebaseObject(usersRef.child(uid));
-        },
-        all:users
-    }
-    return Users;
-}]);
 
 // SERVICES
 splitshareApp.service('CommonProp',['$firebaseAuth','$location', function($firebaseAuth,$location) {
@@ -61,15 +49,20 @@ splitshareApp.service('CommonProp',['$firebaseAuth','$location', function($fireb
 }]);
 
 // CONTROLLERS
-splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','CommonProp',"$firebaseArray"
-    ,"$firebaseObject","$rootScope", function($scope, $firebaseAuth,$location,CommonProp,$firebaseArray,$firebaseObject,$rootScope) {
+splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','CommonProp',"$firebaseArray","$firebaseObject","Users", function($scope, $firebaseAuth,$location,CommonProp,$firebaseArray,$firebaseObject,Users) {
     var ref = new Firebase("https://angular-splitwise.firebaseio.com");
     
     $scope.authObj = $firebaseAuth(ref);
 
+    var isNewUser = true;
+
     $scope.authObj.$onAuth(function(authData) {
-        if(authData){
-            console.log('In Auth');
+        if(authData && isNewUser){
+            ref.child('users').child(authData.uid).set({
+                provider:'email',
+                name:authData.password.email.replace(/@.*/, '')
+
+            });
             CommonProp.setUser(authData.password.email);
         }
     });
@@ -84,7 +77,6 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
         } else {
         CommonProp.setUser(user.password.email);
         console.log("Authenticated successfully with payload");
-        console.log($location);
         $location.path('/splitsharelist');    
         
         }
@@ -102,6 +94,7 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
             $scope.regErrorMessage = error.message;
           } else {
             console.log("Successfully created user account with uid:", userData.uid);
+                // Users.saveUser(userData.uid);
                 $scope.loginSplit();            
           }
         });
@@ -111,7 +104,6 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
 splitshareApp.controller('homeController', ['$scope', "$firebaseArray",'$firebase','$location','CommonProp', function($scope, $firebaseArray,$firebase,$location, CommonProp){
     var fireData = new Firebase('https://angular-splitwise.firebaseio.com');
     $scope.username = CommonProp.getUser();
-    console.log($scope.username);
     if(!$scope.username){
         $location.path('/');
     }
