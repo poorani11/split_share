@@ -54,6 +54,7 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
     $scope.authObj = $firebaseAuth(ref);
 
     var users_ref = ref.child('users');
+    $scope.userdata = users_ref.$asArray();
 
     var isNewUser = true;
 
@@ -61,6 +62,8 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
     $scope.authObj.$onAuth(function(authData) {
         if(authData && isNewUser){
             users_ref.child(authData.uid).set({
+                listid:null,
+                noItems:true,
                 id:authData.uid,
                 provider:'email',
                 name:authData.password.email.replace(/@.*/, '')
@@ -104,7 +107,60 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
     };
 }]);
 
-splitshareApp.controller('homeController', ['$scope', "$firebaseArray",'$firebase','$location','CommonProp', function($scope, $firebaseArray,$firebase,$location, CommonProp){
+splitshareApp.controller('expenseController',['$scope','$firebase','$firebaseArray','$firebaseObject','$location','$routeParams', function($scope, $firebase, $firebaseArray,$firebaseObject,$location,$routeParams){
+    var fireData = new Firebase('https://angular-splitwise.firebaseio.com');
+    var watcher = $firebaseArray(fireData);
+
+    $scope.userdata.listid = $routeParams.id;
+
+    $scope.product = {
+        error:false,
+        price:null,
+        id:null
+    }
+    $scope.toBuy = function(tobuyid){
+        $scope.product.id = tobuyid;
+    };
+
+    $scope.buyitem = function(){
+        var price = $scope.product.price;
+        if(isNaN(price) || price === null || price === '' || price < 0){
+            $scope.product.error = true;
+        }
+        else{
+            var baseref  = fireData.child('lists').child($scope.userdata.listid);
+            var tobuyref = baseref.child('tobuy').child($scope.product.id);
+
+            $firebaseObject(tobuyref).$loaded.then(function(tobuy){
+                var toBuyName = tobuy.name;
+
+                var newproduct = {
+                    amended: false,
+                    date:new Date().getTime(),
+                    name:toBuyName,
+                    owner:$scope.userdata.id,
+                    price:$scope.product.price
+                };
+
+                baseref.child('bought').push(newproduct);
+                tobuyref.remove();
+
+                $scope.product = {
+                    error: false,
+                    price: null,
+                    id: null
+                };
+
+            });
+
+        }
+        
+    };
+
+
+}]);
+
+splitshareApp.controller('homeController', ['$scope', '$firebaseArray','$firebase','$location','CommonProp', function($scope, $firebaseArray,$firebase,$location, CommonProp){
     var fireData = new Firebase('https://angular-splitwise.firebaseio.com');
     $scope.username = CommonProp.getUser();
     if(!$scope.username){
@@ -118,7 +174,7 @@ splitshareApp.controller('homeController', ['$scope', "$firebaseArray",'$firebas
 
     $scope.addExpense = function(){
         $scope.expenses.$add({
-            date:Firebase.ServerValue.TIMESTAMP,
+            date:new Date().getTime(),
             cost:$scope.costInt,
             text:$scope.expenseText,
             emailId: user, 
