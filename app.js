@@ -54,7 +54,7 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
     $scope.authObj = $firebaseAuth(ref);
 
     var users_ref = ref.child('users');
-    $scope.userdata = users_ref.$asArray();
+    
 
     var isNewUser = true;
 
