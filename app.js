@@ -21,8 +21,8 @@ splitshareApp.config(function ($routeProvider){
 });
 
 // SERVICES
-splitshareApp.service('CommonProp',['$firebaseAuth','$location','FirebaseUrl', function($firebaseAuth,$location,FirebaseUrl) {
-    var ref = new Firebase(FirebaseUrl);
+splitshareApp.service('CommonProp',['$firebaseAuth','$location', function($firebaseAuth,$location) {
+    var ref = new Firebase("https://angular-splitwise.firebaseio.com");
     var authObj = $firebaseAuth(ref);
     var user = '';
  
@@ -48,17 +48,20 @@ splitshareApp.service('CommonProp',['$firebaseAuth','$location','FirebaseUrl', f
 }]);
 
 // CONTROLLERS
-splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','CommonProp',"$firebaseArray","$firebaseObject","Users", function($scope, $firebaseAuth,$location,CommonProp,$firebaseArray,$firebaseObject,Users) {
+splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','CommonProp',"$firebaseArray","$firebaseObject", function($scope, $firebaseAuth,$location,CommonProp,$firebaseArray,$firebaseObject) {
     var ref = new Firebase("https://angular-splitwise.firebaseio.com");
     
     $scope.authObj = $firebaseAuth(ref);
+
+    var users_ref = ref.child('users');
 
     var isNewUser = true;
 
 
     $scope.authObj.$onAuth(function(authData) {
         if(authData && isNewUser){
-            ref.child('users').child(authData.uid).set({
+            users_ref.child(authData.uid).set({
+                id:authData.uid,
                 provider:'email',
                 name:authData.password.email.replace(/@.*/, '')
 
@@ -75,8 +78,8 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
         if (error) {
         console.log("Login Failed!", error);
         } else {
+        CommonProp.setUser(user.password.email);
         console.log("Authenticated successfully with payload");
-
         $location.path('/splitsharelist');    
         }
         });
@@ -109,11 +112,13 @@ splitshareApp.controller('homeController', ['$scope', "$firebaseArray",'$firebas
     }
     var user = CommonProp.getUser();
 
+
     var expenseRef = new Firebase('https://angular-splitwise.firebaseio.com/expenses');
     $scope.expenses = $firebaseArray(expenseRef.orderByChild("emailId").equalTo($scope.username));
 
     $scope.addExpense = function(){
         $scope.expenses.$add({
+            date:Firebase.ServerValue.TIMESTAMP,
             cost:$scope.costInt,
             text:$scope.expenseText,
             emailId: user, 

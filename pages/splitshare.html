@@ -6,6 +6,7 @@
 <div class ="container">
     <h3 class="list-group-item title">SPLIT SHARE</h3>
         <div ng-repeat="expense in expenses" class="list-group-item">
+        <span>{{expense.date | date:'mediumDate'}}</span>
         <input type="text" ng-model="expense.text" class="expense">
         <button ng-click="expenses.$remove(expense)" class="pull-right">x</button>
         <span class="badge cost-badge">{{expense.cost}}</span>
