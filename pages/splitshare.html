@@ -9,7 +9,7 @@
         <span>{{expense.date | date:'mediumDate'}}</span>
         <input type="text" ng-model="expense.text" class="expense">
         <span class="pull-right">
-        <button class="btn btn-sm btn-info">EDIT</button>
+        <button class="btn btn-sm btn-info" ng-click="editExpense(expense.$id)" data-target="#editModal">EDIT</button>
         <button ng-click="expenses.$remove(expense)" class="btn btn-sm btn-warning">DELETE</button>
     </span>
         <span class="badge cost-badge">{{expense.cost}}</span>
@@ -28,5 +28,32 @@
         <input type="text" ng-model="costInt" class="cost"/>
         <input type="submit" />
      </form>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;
+                </button>
+                <h4 class="modal-title" id="editModalLabel">Update Expense</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="title-name" class="control-label">Expense Title:</label>
+                        <input type="text" class="form-control" ng-model="postToUpdate.text" id="title-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="cost-text" class="control-label">cost:</label>
+                        <input type="text" class="form-control" ng-model="postToUpdate.cost" id="cost-text"></input>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="update()">Submit</button>
+            </div>
+        </div>
+    </div>
 </div>
 

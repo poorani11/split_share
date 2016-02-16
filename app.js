@@ -160,17 +160,16 @@ splitshareApp.controller('expenseController',['$scope','$firebase','$firebaseArr
 
 }]);
 
-splitshareApp.controller('homeController', ['$scope', '$firebaseArray','$firebase','$location','CommonProp', function($scope, $firebaseArray,$firebase,$location, CommonProp){
+splitshareApp.controller('homeController', ['$scope', '$firebaseArray','$firebase','$location','CommonProp','$firebaseObject', function($scope, $firebaseArray,$firebase,$location, CommonProp,$firebaseObject){
     var fireData = new Firebase('https://angular-splitwise.firebaseio.com');
-    $scope.username = CommonProp.getUser();
+    var user = CommonProp.getUser();
+    $scope.username = user.replace(/@.*/, '');
     if(!$scope.username){
         $location.path('/');
     }
-    var user = CommonProp.getUser();
-
 
     var expenseRef = new Firebase('https://angular-splitwise.firebaseio.com/expenses');
-    $scope.expenses = $firebaseArray(expenseRef.orderByChild("emailId").equalTo($scope.username));
+    $scope.expenses = $firebaseArray(expenseRef.orderByChild("emailId").equalTo(user));
 
     $scope.addExpense = function(){
         $scope.expenses.$add({
@@ -182,6 +181,39 @@ splitshareApp.controller('homeController', ['$scope', '$firebaseArray','$firebas
     $scope.expenseText = ''; 
     $scope.costInt = '';  
     };
+
+    $scope.editExpense =function(id) {
+    
+        var firebaseObj = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + id);
+         console.log(id);
+ 
+        $scope.postToUpdate =  $firebaseObject(firebaseObj);
+        console.log($scope.postToUpdate);
+   
+ 
+        $('#editModal').modal(); 
+
+    };
+
+
+    $scope.update = function() {
+        console.log($scope.postToUpdate.$id);
+        var fb = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + $scope.postToUpdate.$id);
+        var article = $firebaseArray(fb);
+        article.$update({
+            text: $scope.postToUpdate.text,
+            cost: $scope.postToUpdate.cost,
+            emailId: $scope.postToUpdate.emailId
+        }).then(function(ref) {
+            console.log(ref.key()); // bar
+            $('#editModal').modal('hide')
+        }, function(error) {
+            console.log("Error:", error);
+        });
+
+    };
+
+
     $scope.totalExpense = function(){
         var count = 0;
         angular.forEach($scope.expenses, function(expense){
