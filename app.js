@@ -182,7 +182,7 @@ splitshareApp.controller('homeController', ['$scope', '$firebaseArray','$firebas
     $scope.costInt = '';  
     };
 
-    $scope.editExpense =function(id) {
+    $scope.editExpense = function(id) {
     
         var firebaseObj = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + id);
          console.log(id);
@@ -200,18 +200,31 @@ splitshareApp.controller('homeController', ['$scope', '$firebaseArray','$firebas
         console.log($scope.postToUpdate.$id);
         var fb = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + $scope.postToUpdate.$id);
         var article = $firebaseArray(fb);
-        article.$update({
+        fb.set({
+            date:new Date().getTime(),
             text: $scope.postToUpdate.text,
             cost: $scope.postToUpdate.cost,
             emailId: $scope.postToUpdate.emailId
-        }).then(function(ref) {
-            console.log(ref.key()); // bar
-            $('#editModal').modal('hide')
-        }, function(error) {
-            console.log("Error:", error);
         });
 
     };
+
+    $scope.confirmDelete = function(id){
+       var firebaseObj = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + id); 
+        console.log(id);
+ 
+        $scope.postToUpdate =  $firebaseObject(firebaseObj);
+        console.log($scope.postToUpdate);
+   
+ 
+        $('#deleteModal').modal(); 
+
+    };
+
+    $scope.updateDelete = function(){
+        var fb = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + $scope.postToUpdate.$id);
+          fb.remove();
+    }
 
 
     $scope.totalExpense = function(){

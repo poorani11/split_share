@@ -10,7 +10,7 @@
         <input type="text" ng-model="expense.text" class="expense">
         <span class="pull-right">
         <button class="btn btn-sm btn-info" ng-click="editExpense(expense.$id)" data-target="#editModal">EDIT</button>
-        <button ng-click="expenses.$remove(expense)" class="btn btn-sm btn-warning">DELETE</button>
+        <button ng-click="confirmDelete(expense.$id)" data-target="#deleteModal" class="btn btn-sm btn-warning">DELETE</button>
     </span>
         <span class="badge cost-badge">{{expense.cost}}</span>
     </div>
@@ -29,7 +29,7 @@
         <input type="submit" />
      </form>
 </div>
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+<div class="modal" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -51,7 +51,21 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" ng-click="update()">Submit</button>
+                <button type="button" class="btn btn-primary" ng-click="update()"data-dismiss="modal">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="text-align:center;">
+                <h4 class="modal-title" style="color:red;" id="deleteModalLabel">You are going to Delete this post forever !!</h4>
+            </div>
+ 
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-click="updateDelete()" data-dismiss="modal">Delete</button>
             </div>
         </div>
     </div>
