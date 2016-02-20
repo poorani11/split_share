@@ -139,7 +139,7 @@ splitshareApp.controller('homeController', ['$scope', '$firebaseArray','$firebas
     $scope.addUpdate = function(){
         // var firebaseObj = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + id);
         $('#addModal').modal(); 
-    }
+    };
 
     $scope.editExpense = function(id) {
     
@@ -206,6 +206,27 @@ var fireData = new Firebase('https://angular-splitwise.firebaseio.com');
 var user = CommonProp.getUser();
 $scope.username = user.replace(/@.*/, '');
 
-var expenseRef = new Firebase('https://angular-splitwise.firebaseio.com/expenses');
+var authData = fireData.getAuth();
+console.log(authData.uid);
+var memberRef = fireData.child('expenses').child(authData.uid).child('members');
+
+$scope.members = $firebaseArray(memberRef);
+
+$scope.addMember = function(){
+    $scope.members.$add({
+        firstname:$scope.firstnameText,
+        surname:$scope.surnameText,
+        email:$scope.emailText
+    });
+};
+
+$scope.addUpdate = function(){
+        // var firebaseObj = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + id);
+        $('#addModal').modal(); 
+};
+
+$scope.logout = function(){
+    CommonProp.logoutUser();
+}
 
 }]);
