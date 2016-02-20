@@ -7,18 +7,22 @@
     <h3 class="list-group-item title">MEMBERS<span class="pull-right"><button class="btn btn-md btn-orange" ng-click="addUpdate()" data-target="#addModal">Add a Member</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-md btn-mint">Settle Up</button></span></h3></h3>
     <div ng-repeat="member in members" class="list-group-item">
         <div class="row">
-            <div class="col-xs-6 col-sm-3">
+            <div class="col-xs-6 col-sm-4">
                 <h4 class="expense">{{ member.firstname | uppercase}}&nbsp;&nbsp;&nbsp;{{ member.surname | uppercase}}</h4>
             </div>
-            <div class="col-xs-6 col-sm-3">
+            <div class="col-xs-6 col-sm-4">
                 <h4 class="light-grey">{{ member.email }}</h4>
             </div>
-            <div class="col-xs-6 col-sm-3">
-                <button class="btn btn-md btn-info"  data-target="#editModal">EDIT</button>
-            </div>
-            <div class="col-xs-6 col-sm-3">
-                <button data-target="#deleteModal" class="btn btn-md btn-warning btn">DELETE</button>
-            </div>
+            <div class="col-xs-6 col-sm-4">
+                <div class="col-xs-6 col-sm-6">
+                    <span class="pull-right">
+                        <button class="btn btn-md btn-info" ng-click="editMember(member.$id)"  data-target="#editModal">EDIT</button>
+                    </span>
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                    <button data-target="#deleteModal" class="btn btn-md btn-warning btn">DELETE</button>
+                </div>
+            </div>    
 
         </div>
 
@@ -39,8 +43,8 @@
                         <input type="text" class="form-control" ng-model="firstnameText" id="first-name">
                     </div>
                     <div class="form-group">
-                        <label for="sur-text" class="control-label">SURNAME:</label>
-                        <input type="text" class="form-control" ng-model="surnameText" id="sur-text"></input>
+                        <label for="sur-name" class="control-label">SURNAME:</label>
+                        <input type="text" class="form-control" ng-model="surnameText" id="sur-name"></input>
                     </div>
                     <div class = "form-group">
                         <label for="email-text" class="control-label">EMAIL:</label>
@@ -51,6 +55,38 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" ng-click="addMember()"data-dismiss="modal">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;
+                </button>
+                <h4 class="modal-title" id="editModalLabel">Edit Member</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="first-name" class="control-label">FIRSTNAME:</label>
+                        <input type="text" class="form-control" ng-model="postToUpdate.firstname" id="first-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="sur-name" class="control-label">SURNAME:</label>
+                        <input t
+                        ype="text" class="form-control" ng-model="postToUpdate.surname" id="sur-name"></input>
+                    </div>
+                    <div class = "form-group">
+                        <label for="email-text" class="control-label">EMAIL:</label>
+                        <input type="email" class="form-control" ng-model="postToUpdate.email" id="email-text"></input>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="update()"data-dismiss="modal">Submit</button>
             </div>
         </div>
     </div>

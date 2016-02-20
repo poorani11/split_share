@@ -225,6 +225,31 @@ $scope.addUpdate = function(){
         $('#addModal').modal(); 
 };
 
+$scope.editMember = function(id) {
+    
+    var firebaseObj = new Firebase('https://angular-splitwise.firebaseio.com/expenses/'+authData.uid+'/members/' + id);
+    console.log(id);
+ 
+    $scope.postToUpdate =  $firebaseObject(firebaseObj);
+    console.log($scope.postToUpdate);
+   
+ 
+    $('#editModal').modal(); 
+
+};
+
+$scope.update = function() {
+    console.log($scope.postToUpdate.$id);
+    var fb =  new Firebase('https://angular-splitwise.firebaseio.com/expenses/'+authData.uid+'/members/' + $scope.postToUpdate.$id);
+    var article = $firebaseArray(fb);
+    fb.set({
+        firstname: $scope.postToUpdate.firstname,
+        surname: $scope.postToUpdate.surname,
+        email: $scope.postToUpdate.email
+    });
+
+};
+
 $scope.logout = function(){
     CommonProp.logoutUser();
 }
