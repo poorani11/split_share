@@ -1,5 +1,5 @@
 // MODULE
-var splitshareApp = angular.module('splitshareApp', ['firebase','ngRoute']);
+var splitshareApp = angular.module('splitshareApp', ['firebase','ngRoute','ngTagsInput']);
 
 // ROUTES
 splitshareApp.config(function ($routeProvider){
@@ -21,6 +21,10 @@ splitshareApp.config(function ($routeProvider){
     .when('/friends', {
         templateUrl: 'pages/member.html',
         controller: 'memberController'
+    })
+    .when('/dashboard', {
+        templateUrl: 'pages/dashboard.html',
+        controller: 'dashboardController'
     })
 
 });
@@ -269,6 +273,45 @@ $scope.updateDelete = function(){
 
 $scope.logout = function(){
     CommonProp.logoutUser();
-}
+};
 
+}]);
+
+splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$firebase','$location','CommonProp','$firebaseObject', function($scope, $firebaseArray,$firebase,$location, CommonProp,$firebaseObject){
+   var fireData = new Firebase('https://angular-splitwise.firebaseio.com');
+
+   var user = CommonProp.getUser();
+  $scope.username = user.replace(/@.*/, '');
+
+  var expenseRef = new Firebase('https://angular-splitwise.firebaseio.com/expenses');
+  $scope.expenses = $firebaseArray(expenseRef);
+
+  var authData = fireData.getAuth();
+   console.log(authData.uid);
+  var memberRef = fireData.child('expenses').child(authData.uid).child('members');
+  
+
+  $scope.members = $firebaseArray(memberRef);
+
+
+  var friends = $scope.members;
+  var expenses = $scope.expenses;
+
+$scope.loadMembers =
+    memberRef.once("value", function(snapshot) {
+        snapshot.forEach(function(memberSnapshot) {
+        var data = memberSnapshot.key();
+        var firstname = memberSnapshot.child('firstname').val();
+    console.log(firstname);
+      });
+});
+
+
+
+
+  $scope.logout = function(){
+    CommonProp.logoutUser();
+};
+
+    
 }]);
