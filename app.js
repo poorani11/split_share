@@ -289,22 +289,33 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
   var authData = fireData.getAuth();
    console.log(authData.uid);
   var memberRef = fireData.child('expenses').child(authData.uid).child('members');
-  
+  var firstnameRef = fireData.child('expenses').child(authData.uid).child('members').child
 
   $scope.members = $firebaseArray(memberRef);
+  $scope.mem = [];
 
 
   var friends = $scope.members;
   var expenses = $scope.expenses;
+  $scope.firstname = [];
 
-$scope.loadMembers =
     memberRef.once("value", function(snapshot) {
-        snapshot.forEach(function(memberSnapshot) {
-        var data = memberSnapshot.key();
-        var firstname = memberSnapshot.child('firstname').val();
-    console.log(firstname);
+       snapshot.forEach(function(messageSnapshot) {
+    var key = messageSnapshot.key();
+    $scope.dataname = messageSnapshot.child("firstname").val();
+    $scope.datasur = messageSnapshot.child("surname").val();
+    $scope.firstname.push({
+        name:$scope.dataname
+    });
       });
+    $scope.loadMembers = function(query){
+        $scope.members.$dirty = true;
+        return $scope.members;
+       console.log($scope.firstname);
+   };
+
 });
+
 
 
 

@@ -6,39 +6,19 @@
 <p class="lead">Welcome home <b>{{username}}</b> !!</p>
 <div class ="container">
     <h3 class="list-group-item title">DASHBOARD<span class="pull-right"><button class="btn btn-md btn-orange" ng-click="addUpdate()" data-target="#addModal">Add a Expense</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-md btn-mint">Settle Up</button></span></h3></h3>
-     <tags-input ng-model="members" 
-                display-property="firstname" 
-                placeholder="Add a member" 
-                replace-spaces-with-dashes="false"
-                template="tag-template">
-    <auto-complete source="loadmembers"
+    <tags-input class="bootstrap"
+                ng-model="mem"
+                display-property="firstname"
+                placeholder="Add a member"
+                replace-spaces-with-dashes="false">
+      <auto-complete source="loadMembers($query)"
                      min-length="0"
                      load-on-focus="true"
                      load-on-empty="true"
-                     max-results-to-show="32"
-                     template="autocomplete-template">
-    </auto-complete>
-</tags-input>
-<script type="text/ng-template" id="tag-template">
-      <div class="tag-template">
-        <div class="left-panel">
-          <img ng-src="file:///home/poorani/Pictures/50-a1e7c78c96b64b48f8ffd189d623c58b.png"/>
-        </div>
-        <div class="right-panel">
-          <span>{{$getDisplayText()}}</span>
-          <a class="remove-button" ng-click="$removeTag()">&#10006;</a>
-        </div>
-      </div>
-    </script>
-    
-    <script type="text/ng-template" id="autocomplete-template">
-      <div class="autocomplete-template">
-        <div class="left-panel">
-          <img ng-src="file:///home/poorani/Pictures/50-a1e7c78c96b64b48f8ffd189d623c58b.png" />
-        </div>
-        <div class="right-panel">
-          <span ng-bind-html="$highlight($getDisplayText())"></span>
-        </div>
-      </div>
-    </script>
+                     debounce-delay="0"
+                     max-results="10"></auto-complete>
+    </tags-input>
+  <div ng-repeat="x in firstname" class="list-group-item">
+    {{ x.name }}
+  </div>
 </div>
