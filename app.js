@@ -296,17 +296,7 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
 
   var friends = $scope.members;
   var expenses = $scope.expenses;
-  $scope.firstname = [];
 
-    memberRef.once("value", function(snapshot) {
-        snapshot.forEach(function(messageSnapshot) {
-        var key = messageSnapshot.key();
-        $scope.dataname = messageSnapshot.child("firstname").val();
-        $scope.datasur = messageSnapshot.child("surname").val();
-        $scope.firstname.push({
-                name:$scope.dataname
-        });
-    });
     $scope.loadMembers = function(query){
         return $scope.members;
        console.log($scope.firstname);

@@ -18,9 +18,7 @@
                      load-on-empty="true"
                      max-results="10"></auto-complete>
     </tags-input>
-     <p>Model: {{ members }}</p>
-     <p>newMembers: {{newMembers}}</p>
-  <div ng-repeat="x in firstname" class="list-group-item">
-    {{ x.name }}
+  <div ng-repeat="member in members" class="list-group-item">
+    {{ member.firstname }}
   </div>
 </div>
