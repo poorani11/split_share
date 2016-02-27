@@ -289,7 +289,6 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
   var authData = fireData.getAuth();
    console.log(authData.uid);
   var memberRef = fireData.child('expenses').child(authData.uid).child('members');
-  var firstnameRef = fireData.child('expenses').child(authData.uid).child('members').child
 
   $scope.members = $firebaseArray(memberRef);
   $scope.mem = [];
@@ -309,12 +308,11 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
     });
       });
     $scope.loadMembers = function(query){
-        $scope.members.$dirty = true;
         return $scope.members;
        console.log($scope.firstname);
    };
 
-});
+
 
 
 

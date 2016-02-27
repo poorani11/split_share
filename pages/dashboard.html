@@ -6,8 +6,7 @@
 <p class="lead">Welcome home <b>{{username}}</b> !!</p>
 <div class ="container">
     <h3 class="list-group-item title">DASHBOARD<span class="pull-right"><button class="btn btn-md btn-orange" ng-click="addUpdate()" data-target="#addModal">Add a Expense</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-md btn-mint">Settle Up</button></span></h3></h3>
-    <tags-input class="bootstrap"
-                ng-model="mem"
+    <tags-input ng-model="mem"
                 display-property="firstname"
                 placeholder="Add a member"
                 replace-spaces-with-dashes="false">
@@ -15,9 +14,9 @@
                      min-length="0"
                      load-on-focus="true"
                      load-on-empty="true"
-                     debounce-delay="0"
                      max-results="10"></auto-complete>
     </tags-input>
+     <p>Model: {{ members }}</p>
   <div ng-repeat="x in firstname" class="list-group-item">
     {{ x.name }}
   </div>
