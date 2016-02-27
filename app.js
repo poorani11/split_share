@@ -291,7 +291,7 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
   var memberRef = fireData.child('expenses').child(authData.uid).child('members');
 
   $scope.members = $firebaseArray(memberRef);
-  $scope.mem = [];
+  $scope.newMembers = [];
 
 
   var friends = $scope.members;
@@ -299,17 +299,25 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
   $scope.firstname = [];
 
     memberRef.once("value", function(snapshot) {
-       snapshot.forEach(function(messageSnapshot) {
-    var key = messageSnapshot.key();
-    $scope.dataname = messageSnapshot.child("firstname").val();
-    $scope.datasur = messageSnapshot.child("surname").val();
-    $scope.firstname.push({
-        name:$scope.dataname
+        snapshot.forEach(function(messageSnapshot) {
+        var key = messageSnapshot.key();
+        $scope.dataname = messageSnapshot.child("firstname").val();
+        $scope.datasur = messageSnapshot.child("surname").val();
+        $scope.firstname.push({
+                name:$scope.dataname
+        });
     });
-      });
     $scope.loadMembers = function(query){
         return $scope.members;
        console.log($scope.firstname);
+   };
+
+   $scope.addMembers = function(member){
+    $scope.newMembers.push('Added: ' + member);
+   };
+
+   $scope.removeMembers = function(member){
+    $scope.newMembers.push('Removed: ' + member);
    };
 
 
