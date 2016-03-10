@@ -73,7 +73,8 @@ splitshareApp.controller("MyAuthCtrl", ["$scope", "$firebaseAuth",'$location','C
             ref.child('users').child(authData.uid).set({
                 id:authData.uid,
                 provider:'email',
-                name:authData.password.email.replace(/@.*/, '')
+                name:authData.password.email.replace(/@.*/, ''),
+                email:authData.password.email
 
             });
             CommonProp.setUser(authData.password.email);
@@ -216,6 +217,10 @@ var memberRef = fireData.child('expenses').child(authData.uid).child('members');
 
 $scope.members = $firebaseArray(memberRef);
 
+var user_ref= fireData.child('users');
+$scope.users = $firebaseArray(user_ref);
+console.log($scope.users);
+
 $scope.addMember = function(){
     $scope.members.$add({
         firstname:$scope.firstnameText,
@@ -289,7 +294,9 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
   var authData = fireData.getAuth();
    console.log(authData.uid);
   var memberRef = fireData.child('expenses').child(authData.uid).child('members');
-  var firstnameRef = fireData.child('expenses').child(authData.uid).child('members').child
+
+  var SharedExpenseRef = fireData.child('expenses').child(authData.uid).child('sharedEexpenses');
+  $scope.sharedExpense = $firebaseArray(SharedExpenseRef);
 
   $scope.members = $firebaseArray(memberRef);
   $scope.newMembers = [];
@@ -303,16 +310,26 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
     $scope.loadMembers = function(query){
         return $scope.members;
        console.log($scope.firstname);
-   };
+    };
 
 
-  $scope.addMembers = function(member){
-    console.log('Added: ' + member);
-   };
+    $scope.addMembers = function(member){
+        console.log('Added: ' + member);
+    };
 
-   $scope.removeMembers = function(member){
-    console.log('Removed: ' + member);
-   };
+    $scope.removeMembers = function(member){
+        console.log('Removed: ' + member);
+    };
+
+    $scope.addSharedExpense = function(){
+        $scope.sharedExpense.$add({
+            time:new Date().getTime(),
+            ownedBy:user,
+            amount:$scope.amount
+
+        });
+
+    }
 
 
 

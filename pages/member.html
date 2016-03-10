@@ -49,7 +49,19 @@
                     </div>
                     <div class = "form-group">
                         <label for="email-text" class="control-label">EMAIL:</label>
-                        <input type="email" class="form-control" ng-model="emailText" id="email-text"></input>
+                        <div class="row">
+                            <div class="col-xs-4 col-xs-offset-4">
+                                <select ng-model="emailText" class="form-control"  id="email-text" value="list.email">
+                                    <option value="{{list.email}}" ng-repeat="list in users">{{list.email}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <div id="editor" class="well" ng-bind="emailText">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
