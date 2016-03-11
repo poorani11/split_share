@@ -5,7 +5,7 @@
 </nav>
 <p class="lead">Welcome home <b>{{username}}</b> !!</p>
 <div class ="container">
-    <h3 class="list-group-item title">DASHBOARD<span class="pull-right"><button class="btn btn-md btn-orange" ng-click="addUpdate()" data-target="#addModal">Add a Expense</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-md btn-mint">Settle Up</button></span></h3></h3>
+    <h3 class="list-group-item title">DASHBOARD<span class="pull-right"><button class="btn btn-md btn-orange" ng-click="addModalExpense()" data-target="#addModal">Add a Expense</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-md btn-mint">Settle Up</button></span></h3></h3>
     <tags-input class="bootstrap"
                 ng-model="newMembers"
                 display-property="firstname"
@@ -22,4 +22,53 @@
   <div ng-repeat="member in members" class="list-group-item">
     {{ member.firstname }}
   </div>
+</div>
+<div class="modal" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;
+                </button>
+                <h4 class="modal-title" id="addModalLabel">Add Shared Expense</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <tags-input class="bootstrap"
+                        ng-model="newMembers"
+                        display-property="firstname"
+                        placeholder="Add a member"
+                        on-tag-added="addMembers($member)"
+                        on-tag-removed="removeMembers($member)">
+                        <auto-complete source="loadMembers($query)"
+                            min-length="0"
+                            load-on-focus="true"
+                            load-on-empty="true"
+                            debounce-delay="0"
+                            max-results="10">
+                        </auto-complete>
+                    </tags-input>
+                    <div class="form-group">
+                        <label for="title-name" class="control-label">Expense Title:</label>
+                        <input type="text" class="form-control" ng-model="expenseDescription" id="title-name">
+                    </div>
+                     <div class="form-group">
+                        <label for="cost-text" class="control-label">Amount:</label>
+                        <input type="text" class="form-control" ng-model="amount" id="amount-text"></input>
+                    </div>
+                    <div class="form-group">
+                        <label for="cost-text" class="control-label">Paid By:</label>
+                        <input type="text" class="form-control" ng-model="lender" id="paid-text"></input>
+                    </div>
+                    <div class = "form-group">
+                        <label for="date-text" class="control-label">Date:</label>
+                        <input type="date" class="form-control" ng-model="myDate" id="date-text"></input>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="addSharedExpense()"data-dismiss="modal">Submit</button>
+            </div>
+        </div>
+    </div>
 </div>

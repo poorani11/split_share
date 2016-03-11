@@ -296,10 +296,11 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
   var memberRef = fireData.child('expenses').child(authData.uid).child('members');
 
   var SharedExpenseRef = fireData.child('expenses').child(authData.uid).child('sharedEexpenses');
-  $scope.sharedExpense = $firebaseArray(SharedExpenseRef);
+  $scope.sharedExpenses = $firebaseArray(SharedExpenseRef);
 
   $scope.members = $firebaseArray(memberRef);
   $scope.newMembers = [];
+  $scope.myDate=new Date();
 
 
   var friends = $scope.members;
@@ -322,23 +323,64 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
     };
 
     $scope.addSharedExpense = function(){
-        $scope.sharedExpense.$add({
-            time:new Date().getTime(),
-            ownedBy:user,
+        $scope.sharedExpenses.$add({
+            text:$scope.expenseDescription,
+            paid_by:$scope.lender,
+            paid_for:$scope.newMembers,
+            date:$scope.myDate.getTime(),
             amount:$scope.amount
-
         });
 
-    }
+    };
+
+    $scope.addModalExpense = function(){
+        // var firebaseObj = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + id);
+        $('#addModal').modal(); 
+    };
+
+
+    $scope.splitExpense = function(){
+        var friends = $scope.newMembers;
+        var expenses = $scope.sharedExpenses;
+        var balance = [];
+
+        for(var i in friends){
+            balance[i] = {id: friends[i].id, name: friends[i].name, owes: []};
+            for( var j in friends){
+                if(i != j){
+                    balance[i].owes.push({id: friends[j].id, name: friends[j].name, amount: 0});
+                }
+            }
+
+        }
+        for(var i in expenses){
+            var expense = expenses[i];
+            var amountPerFriend = expense.amount / expense.paid_for.length;
+
+            for(var j in balance){
+                if(balance[j].id == expense.paid_by){
+                    for(var k in expense.paid_for)
+                    {
+                        for(var j in balance[j].owes){
+                            if (balance[j].owes[l].id == expense.paid_for[k]){
+                                balance[j].owes[l].amount -= amountPerFriend;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    };
 
 
 
 
 
 
-  $scope.logout = function(){
-    CommonProp.logoutUser();
-};
+    $scope.logout = function(){
+        CommonProp.logoutUser();
+    };
 
     
 }]);

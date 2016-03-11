@@ -50,14 +50,12 @@
                     <div class = "form-group">
                         <label for="email-text" class="control-label">EMAIL:</label>
                         <div class="row">
-                            <div class="col-xs-4 col-xs-offset-4">
+                            <div class="col-md-6">
                                 <select ng-model="emailText" class="form-control"  id="email-text" value="list.email">
                                     <option value="{{list.email}}" ng-repeat="list in users">{{list.email}}</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-8 col-xs-offset-2">
+                            <div class="col-md-6">
                                 <div id="editor" class="well" ng-bind="emailText">
                                 </div>
                             </div>
