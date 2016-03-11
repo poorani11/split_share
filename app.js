@@ -294,6 +294,7 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
   var authData = fireData.getAuth();
    console.log(authData.uid);
   var memberRef = fireData.child('expenses').child(authData.uid).child('members');
+<<<<<<< HEAD
 
   var SharedExpenseRef = fireData.child('expenses').child(authData.uid).child('sharedEexpenses');
   $scope.sharedExpenses = $firebaseArray(SharedExpenseRef);
@@ -301,18 +302,25 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
   $scope.members = $firebaseArray(memberRef);
   $scope.newMembers = [];
   $scope.myDate=new Date();
+=======
+
+  $scope.members = $firebaseArray(memberRef);
+  $scope.newMembers = [];
+>>>>>>> 5c6a500b010c300ca6b56fd9f6dda991bccbff6b
 
 
   var friends = $scope.members;
   var expenses = $scope.expenses;
+<<<<<<< HEAD
   $scope.firstname = [];
 
+=======
+>>>>>>> 5c6a500b010c300ca6b56fd9f6dda991bccbff6b
 
     $scope.loadMembers = function(query){
         return $scope.members;
        console.log($scope.firstname);
     };
-
 
     $scope.addMembers = function(member){
         console.log('Added: ' + member);
