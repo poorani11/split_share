@@ -296,6 +296,9 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
   var memberRef = fireData.child('expenses').child(authData.uid).child('members');
   $scope.members = $firebaseArray(memberRef);
 
+  var user_ref= fireData.child('users');
+  $scope.users = $firebaseArray(user_ref);
+
   var SharedExpenseRef = fireData.child('expenses').child(authData.uid).child('sharedEexpenses');
   $scope.sharedExpenses = $firebaseArray(SharedExpenseRef);
 
@@ -336,34 +339,19 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
     $scope.splitExpense = function(){
         var friends = $scope.newMembers;
         var expenses = $scope.sharedExpenses;
-        var balance = [];
 
-        for(var i in friends){
-            balance[i] = {id: friends[i].id, name: friends[i].name, owes: []};
-            for( var j in friends){
-                if(i != j){
-                    balance[i].owes.push({id: friends[j].id, name: friends[j].name, amount: 0});
-                }
-            }
+        angular.forEach(friends, function(roomie) {
+            var split = 100/friends.length;
+            var indivCost = amount / friends.length;
 
-        }
-        for(var i in expenses){
-            var expense = expenses[i];
-            var amountPerFriend = expense.amount / expense.paid_for.length;
-
-            for(var j in balance){
-                if(balance[j].id == expense.paid_by){
-                    for(var k in expense.paid_for)
-                    {
-                        for(var j in balance[j].owes){
-                            if (balance[j].owes[l].id == expense.paid_for[k]){
-                                balance[j].owes[l].amount -= amountPerFriend;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+            $scope.expenses.$add({
+            date:$scope.myDate.getTime(),
+            cost:indivCost,
+            text:$scope.expenseDescription,
+            emailId: roomie.emailId, 
+        });
+            roomie.owes += indivCost;
+        });
 
     };
 

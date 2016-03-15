@@ -7,7 +7,7 @@
 <div class ="container">
     <h3 class="list-group-item title">DASHBOARD<span class="pull-right"><button class="btn btn-md btn-orange" ng-click="addModalExpense()" data-target="#addModal">Add a Expense</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-md btn-mint">Settle Up</button></span></h3></h3>
   <div ng-repeat="member in members" class="list-group-item">
-    {{ member.firstname }}
+    {{ member.firstname | uppercase }}
   </div>
 </div>
 <div class="modal" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
@@ -44,7 +44,17 @@
                     </div>
                     <div class="form-group">
                         <label for="cost-text" class="control-label">Paid By:</label>
-                        <input type="text" class="form-control" ng-model="lender" id="paid-text"></input>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <select ng-model="lender" class="form-control"  id="paid-text" value="list.name">
+                                    <option value="{{list.name}}" ng-repeat="list in users">{{list.name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="editor" class="well" ng-bind="lender">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class = "form-group">
                         <label for="date-text" class="control-label">Date:</label>
