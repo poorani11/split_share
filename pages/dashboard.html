@@ -20,6 +20,7 @@
             </div>
             <div class="modal-body">
                 <form role="form">
+                    <label for="title-name" class="control-label">Expense Members:</label>
                     <tags-input class="bootstrap"
                         ng-model="newMembers"
                         display-property="firstname"
@@ -64,7 +65,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" ng-click="addSharedExpense()"data-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-primary" ng-click="splitExpense(); addSharedExpense()"data-dismiss="modal">Submit</button>
             </div>
         </div>
     </div>

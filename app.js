@@ -340,17 +340,19 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
         var friends = $scope.newMembers;
         var expenses = $scope.sharedExpenses;
 
+
         angular.forEach(friends, function(roomie) {
             var split = 100/friends.length;
-            var indivCost = amount / friends.length;
+
+            var indivCost = $scope.amount / friends.length;
+            console.log($scope.amount);
 
             $scope.expenses.$add({
             date:$scope.myDate.getTime(),
             cost:indivCost,
             text:$scope.expenseDescription,
-            emailId: roomie.emailId, 
+            emailId: roomie.email, 
         });
-            roomie.owes += indivCost;
         });
 
     };
