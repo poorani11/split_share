@@ -282,12 +282,12 @@ $scope.logout = function(){
 
 }]);
 
-splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$firebase','$location','CommonProp','$firebaseObject', function($scope, $firebaseArray,$firebase,$location, CommonProp,$firebaseObject){
+splitshareApp.controller('dashboardController', ['$scope', '$q', '$firebaseArray','$firebase','$location','CommonProp','$firebaseObject', function($scope, $q, $firebaseArray,$firebase,$location, CommonProp,$firebaseObject){
    var fireData = new Firebase('https://angular-splitwise.firebaseio.com');
 
    var user = CommonProp.getUser();
   $scope.username = user.replace(/@.*/, '');
-
+ 
   var expenseRef = new Firebase('https://angular-splitwise.firebaseio.com/expenses');
   $scope.expenses = $firebaseArray(expenseRef);
 
@@ -319,14 +319,18 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
         console.log('Removed: ' + member);
     };
 
-    $scope.addSharedExpense = function(){
+    var addSharedExpense = function(keysArr){
         $scope.sharedExpenses.$add({
             text:$scope.expenseDescription,
             paid_by:$scope.lender,
             paid_for:$scope.newMembers,
             date:$scope.myDate.getTime(),
-            amount:$scope.amount
-        });
+            amount:$scope.amount,
+            expRefs: keysArr
+
+        }).then(function(ref) {
+            $scope.modalClose 
+        })
 
     };
 
@@ -340,19 +344,29 @@ splitshareApp.controller('dashboardController', ['$scope', '$firebaseArray','$fi
         var friends = $scope.newMembers;
         var expenses = $scope.sharedExpenses;
 
+        var keysArr = []
+        var count = 0
 
         angular.forEach(friends, function(roomie) {
             var split = 100/friends.length;
 
             var indivCost = $scope.amount / friends.length;
-            console.log($scope.amount);
 
             $scope.expenses.$add({
-            date:$scope.myDate.getTime(),
-            cost:indivCost,
-            text:$scope.expenseDescription,
-            emailId: roomie.email, 
-        });
+                date:$scope.myDate.getTime(),
+                cost:indivCost,
+                text:$scope.expenseDescription,
+                emailId: roomie.email, 
+            }).then(function(ref) {
+                count++
+                keysArr.push(ref.key())
+                if (count == friends.length) {
+                    addSharedExpense(keysArr)
+                }
+            }).catch(function(error) {
+                console.log("Error:", error);
+
+            })
         });
 
     };
