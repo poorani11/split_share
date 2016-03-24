@@ -336,22 +336,23 @@ splitshareApp.controller('dashboardController', ['$scope', '$q', '$firebaseArray
     };
 
     $scope.showFriendName = function(friendId) {
-        var friends = $scope.members;
+        var friends = $scope.users;
         for (var i in friends) {
-            console.log(friendId);
-                if (friends[i].$id == friendId) {
-                    return friends[i].firstname;
+            console.log(friends[i].id);
+                if (friends[i].id == friendId) {
+                    return friends[i].name;
                 }
         }
     };
 
     $scope.showFriendNames = function(roomie) {
-        var roomies = $scope.newMembers;
         var friendNames = '';
-        for (var i in roomies) {
-            var name = roomie.firstname;
+        for (var i in roomie) {
+            var ref = roomie[i];
+            var name = ref.firstname;
+            console.log(name);
             friendNames += name;
-            if (i < roomies.length - 1) {
+            if (i <= i.length) {
                 friendNames += ', ';
             }
         }

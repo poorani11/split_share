@@ -22,11 +22,11 @@
     </thead>
     <tbody>
         <tr ng-repeat="expense in sharedExpenses | orderBy:-expense.date:reverse">
-            <td>{{expense.text}}</td>
+            <td>{{expense.text | uppercase }}</td>
             <td>&#8377;{{expense.amount | number:2}}</td>
             <td>{{expense.date | date:'yyyy-MM-dd'}}</td>
-            <td>{{showFriendName(expense.paid_by)}}</td>
-            <td>{{showFriendNames(expense.paid_for)}}</td>
+            <td>{{showFriendName(expense.paid_by) | uppercase }}</td>
+            <td>{{showFriendNames(expense.paid_for) | uppercase }}</td>
             <td>
                 <button class="btn btn-danger btn-xs" data-target="#deleteModal" ng-click="deleteSharedExpense(expense.$id)"><span class="glyphicon glyphicon-remove"></span></button>
             </td>
