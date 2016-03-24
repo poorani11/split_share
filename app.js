@@ -225,7 +225,9 @@ $scope.addMember = function(){
     $scope.members.$add({
         firstname:$scope.firstnameText,
         surname:$scope.surnameText,
-        email:$scope.emailText
+        email:$scope.emailText,
+        owes:0,
+        lent:0
     });
 };
 
@@ -299,7 +301,7 @@ splitshareApp.controller('dashboardController', ['$scope', '$q', '$firebaseArray
   var user_ref= fireData.child('users');
   $scope.users = $firebaseArray(user_ref);
 
-  var SharedExpenseRef = fireData.child('expenses').child(authData.uid).child('sharedEexpenses');
+  var SharedExpenseRef = fireData.child('expenses').child(authData.uid).child('sharedExpenses');
   $scope.sharedExpenses = $firebaseArray(SharedExpenseRef);
 
   
@@ -328,11 +330,34 @@ splitshareApp.controller('dashboardController', ['$scope', '$q', '$firebaseArray
             amount:$scope.amount,
             expRefs: keysArr
 
-        }).then(function(ref) {
-            $scope.modalClose 
-        })
+        });
+        console.log($scope.sharedExpenses);
 
     };
+
+    $scope.showFriendName = function(friendId) {
+        var friends = $scope.members;
+        for (var i in friends) {
+            console.log(friendId);
+                if (friends[i].$id == friendId) {
+                    return friends[i].firstname;
+                }
+        }
+    };
+
+    $scope.showFriendNames = function(roomie) {
+        var roomies = $scope.newMembers;
+        var friendNames = '';
+        for (var i in roomies) {
+            var name = roomie.firstname;
+            friendNames += name;
+            if (i < roomies.length - 1) {
+                friendNames += ', ';
+            }
+        }
+
+            return friendNames;
+    };    
 
     $scope.addModalExpense = function(){
         // var firebaseObj = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + id);
@@ -368,7 +393,90 @@ splitshareApp.controller('dashboardController', ['$scope', '$q', '$firebaseArray
 
             })
         });
+    };
 
+    $scope.calculateBalance = function(){
+        var friends = $scope.members;
+        var shared_members = $scope.newMembers;
+        var expenses = $scope.sharedExpenses;
+        var rec = $scope.sharedExpenses.$getRecord($scope.lender);
+        var lender_name = rec.firstname;
+        var balance = [];
+
+        for( var i in friends){
+            if($scope.lender == i.$id){
+                balance[i].push({_id:$scope.lender, name:lender_name, owes:[]});
+                for( var j in shared_members){
+                    var member_id = j.$id;
+                    balance[i].owes.push({_id:member_id, name: j.firstname, amount:0});
+                }
+            }
+        }
+        
+        for( var i in expenses){
+            var expense = expenses[i];
+            var amountPerFriend = expense.amount / expense.paid_for.length;
+
+            for( var j in balance){
+                if(balance[j]._id == expense.paid_by){
+                    for( var k in expense.paid_for){
+                        for( var l in balance[j].owes){
+                            if(balance[j].owes[l]._id == expense.paid_for[k].$id){
+                                balance[j].owes[l].amount -= amountPerFriend;
+
+                            }
+                        }
+                    }
+                }
+                else{
+                    for( var k in expense.paid_for){
+                        if(balance[j]._id == expense.paid_for[k].$id){
+                            for( var l in balance[j].owes){
+                                if(balance[j].owes[l]._id == expense.paid_by){
+                                    balance[j].owes[l].amount += amountPerFriend;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+
+        for( var i in balance){
+            for ( var j in balance[i].owes){
+                if(balance[i].owes[j].amount < 0){
+                    balance[i].owes[j].amount = 0;
+                }
+            }
+        }
+        return balance;
+
+    };
+
+
+    $scope.deleteSharedExpense = function(id){
+        
+        var firebaseObj = new Firebase('https://angular-splitwise.firebaseio.com/expenses/'+authData.uid+'/sharedExpenses/' + id);
+        
+        $scope.postToUpdate =  $firebaseObject(firebaseObj);
+   
+ 
+        $('#deleteModal').modal(); 
+    };
+    
+    $scope.updateDelete = function(){
+        console.log($scope.postToUpdate.$id);
+        var fb =  new Firebase('https://angular-splitwise.firebaseio.com/expenses/'+authData.uid+'/sharedExpenses/' + $scope.postToUpdate.$id);
+        var article = $firebaseArray(fb);
+        var expenseIds = $scope.postToUpdate.expRefs;
+        angular.forEach(expenseIds, function(expenseId){
+            var fbId = new Firebase('https://angular-splitwise.firebaseio.com/expenses/' + expenseId);
+            fbId.remove();
+        });
+        fb.remove();
     };
 
 

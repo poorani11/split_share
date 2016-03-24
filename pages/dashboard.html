@@ -9,6 +9,30 @@
   <div ng-repeat="member in members" class="list-group-item">
     {{ member.firstname | uppercase }}
   </div>
+  <table class="table table-hover table-condensed">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Paid by</th>
+            <th>Paid for</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="expense in sharedExpenses | orderBy:-expense.date:reverse">
+            <td>{{expense.text}}</td>
+            <td>&#8377;{{expense.amount | number:2}}</td>
+            <td>{{expense.date | date:'yyyy-MM-dd'}}</td>
+            <td>{{showFriendName(expense.paid_by)}}</td>
+            <td>{{showFriendNames(expense.paid_for)}}</td>
+            <td>
+                <button class="btn btn-danger btn-xs" data-target="#deleteModal" ng-click="deleteSharedExpense(expense.$id)"><span class="glyphicon glyphicon-remove"></span></button>
+            </td>
+        </tr>
+    </tbody>
+</table>
 </div>
 <div class="modal" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -48,12 +72,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <select ng-model="lender" class="form-control"  id="paid-text" value="list.name">
-                                    <option value="{{list.name}}" ng-repeat="list in users">{{list.name}}</option>
+                                    <option value="{{list.id}}" ng-repeat="list in users">{{list.name | uppercase }}</option>
                                 </select>
-                            </div>
-                            <div class="col-md-6">
-                                <div id="editor" class="well" ng-bind="lender">
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -66,6 +86,20 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" ng-click="splitExpense()"data-dismiss="modal">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="text-align:center;">
+                <h4 class="modal-title" style="color:red;" id="deleteModalLabel">You are going to Delete this post forever !!</h4>
+            </div>
+ 
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-click="updateDelete()" data-dismiss="modal">Delete</button>
             </div>
         </div>
     </div>
