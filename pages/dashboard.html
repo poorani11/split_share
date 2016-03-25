@@ -9,6 +9,12 @@
   <div ng-repeat="member in members" class="list-group-item">
     {{ member.firstname | uppercase }}
   </div>
+  <h2>Balance</h2>
+<div ng-repeat="b in balance">
+    <div ng-repeat="owe in b.owes">
+        <span ng-if="owe.amount > 0"><strong>{{b.name}}</strong> owes <strong>$ {{owe.amount | number:2}}</strong> to <strong>{{owe.name}}</strong>.</span>
+    </div>
+</div>
   <table class="table table-hover table-condensed">
     <thead>
         <tr>

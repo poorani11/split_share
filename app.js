@@ -220,15 +220,18 @@ $scope.members = $firebaseArray(memberRef);
 var user_ref= fireData.child('users');
 $scope.users = $firebaseArray(user_ref);
 console.log($scope.users);
-
 $scope.addMember = function(){
-    $scope.members.$add({
-        firstname:$scope.firstnameText,
-        surname:$scope.surnameText,
-        email:$scope.emailText,
-        owes:0,
-        lent:0
-    });
+    new Firebase("https://angular-splitwise.firebaseio.com/users")
+            .orderByChild('email')
+            .equalTo($scope.emailText)
+            .once('child_added', function(snap) {
+               $scope.members.$add({
+               firstname:$scope.firstnameText,
+               surname:$scope.surnameText,
+               email:$scope.emailText,
+               member_id:snap.key()
+            })
+        })
 };
 
 $scope.addUpdate = function(){
@@ -350,7 +353,6 @@ splitshareApp.controller('dashboardController', ['$scope', '$q', '$firebaseArray
         for (var i in roomie) {
             var ref = roomie[i];
             var name = ref.firstname;
-            console.log(name);
             friendNames += name;
             if (i <= i.length) {
                 friendNames += ', ';
@@ -397,19 +399,23 @@ splitshareApp.controller('dashboardController', ['$scope', '$q', '$firebaseArray
     };
 
     $scope.calculateBalance = function(){
-        var friends = $scope.members;
+        var friends = $scope.users;
         var shared_members = $scope.newMembers;
         var expenses = $scope.sharedExpenses;
         var rec = $scope.sharedExpenses.$getRecord($scope.lender);
         var lender_name = rec.firstname;
         var balance = [];
 
-        for( var i in friends){
-            if($scope.lender == i.$id){
-                balance[i].push({_id:$scope.lender, name:lender_name, owes:[]});
+        for( var i in users){
+            var temp = friends[i]
+            console.log(temp.id);
+            if($scope.lender == temp.id){
+                balance[i].push({_id:$scope.lender, name:temp.name, owes:[]});
+                console.log(balance[i])
                 for( var j in shared_members){
-                    var member_id = j.$id;
-                    balance[i].owes.push({_id:member_id, name: j.firstname, amount:0});
+                    var tem = shared_members[j]
+                    var member_id = tem.$id;
+                    balance[i].owes.push({_id:member_id, name: tem.firstname, amount:0});
                 }
             }
         }
