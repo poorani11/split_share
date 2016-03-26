@@ -22,7 +22,7 @@ splitshareApp.config(function ($routeProvider){
         templateUrl: 'pages/member.html',
         controller: 'memberController'
     })
-    .when('/dashboard', {
+    .when('/dashboard/', {
         templateUrl: 'pages/dashboard.html',
         controller: 'dashboardController'
     })
@@ -311,6 +311,8 @@ splitshareApp.controller('dashboardController', ['$scope', '$q', '$firebaseArray
   $scope.newMembers = [];
   $scope.myDate=new Date();
 
+
+
     $scope.loadMembers = function(query){
         return $scope.members;
        console.log($scope.firstname);
@@ -334,14 +336,12 @@ splitshareApp.controller('dashboardController', ['$scope', '$q', '$firebaseArray
             expRefs: keysArr
 
         });
-        console.log($scope.sharedExpenses);
 
     };
 
     $scope.showFriendName = function(friendId) {
         var friends = $scope.users;
         for (var i in friends) {
-            console.log(friends[i].id);
                 if (friends[i].id == friendId) {
                     return friends[i].name;
                 }
@@ -398,70 +398,88 @@ splitshareApp.controller('dashboardController', ['$scope', '$q', '$firebaseArray
         });
     };
 
-    $scope.calculateBalance = function(){
-        var friends = $scope.users;
-        var shared_members = $scope.newMembers;
+    $scope.calculateBal = function(){
+        console.log('123')
+        var friends = $scope.members;
         var expenses = $scope.sharedExpenses;
-        var rec = $scope.sharedExpenses.$getRecord($scope.lender);
-        var lender_name = rec.firstname;
         var balance = [];
 
-        for( var i in users){
-            var temp = friends[i]
-            console.log(temp.id);
-            if($scope.lender == temp.id){
-                balance[i].push({_id:$scope.lender, name:temp.name, owes:[]});
-                console.log(balance[i])
-                for( var j in shared_members){
-                    var tem = shared_members[j]
-                    var member_id = tem.$id;
-                    balance[i].owes.push({_id:member_id, name: tem.firstname, amount:0});
-                }
-            }
-        }
+        var promisesArr = []
+        promisesArr.push(friends.$loaded());
         
-        for( var i in expenses){
-            var expense = expenses[i];
-            var amountPerFriend = expense.amount / expense.paid_for.length;
+        promisesArr.push(expenses.$loaded());
 
-            for( var j in balance){
-                if(balance[j]._id == expense.paid_by){
-                    for( var k in expense.paid_for){
-                        for( var l in balance[j].owes){
-                            if(balance[j].owes[l]._id == expense.paid_for[k].$id){
-                                balance[j].owes[l].amount -= amountPerFriend;
-
-                            }
-                        }
+        $q.all(promisesArr).then(function(result) {
+            for( var i = 0 ; i < expenses.length; i++){
+                var ref = expenses[i]
+                for( var j = 0 ; j < friends.length; j++){
+                    var temp = friends[j]
+                    if(ref.paid_by == temp.member_id){
+                        balance.push({_id:ref.paid_by, name:temp.firstname, owes:[]});
+                        for( var k in ref.paid_for){
+                            var tem = ref.paid_for[k]
+                            var member_id = tem.member_id;
+                            balance[balance.length-1].owes.push({_id:member_id, name: tem.firstname, amount:0});
+                        }    
                     }
                 }
-                else{
-                    for( var k in expense.paid_for){
-                        if(balance[j]._id == expense.paid_for[k].$id){
+            }
+            console.log(expenses.length)
+            for( var i = 0 ; i < expenses.length; i++){
+                var expense = expenses[i];
+                console.log(expense)
+                // if(!expense.paid_for) {
+                //     continue;
+                // }
+                var amountPerFriend = expense.amount / expense.paid_for.length;
+
+                for( var j in balance){
+                    if(balance[j]._id == expense.paid_by){
+                        for( var k in expense.paid_for){
                             for( var l in balance[j].owes){
-                                if(balance[j].owes[l]._id == expense.paid_by){
-                                    balance[j].owes[l].amount += amountPerFriend;
+                                if(balance[j].owes[l]._id == expense.paid_for[k].member_id){
+                                    balance[j].owes[l].amount -= amountPerFriend;
+
                                 }
                             }
                         }
+                    }
+                    else{
+                        for( var k in expense.paid_for){
+                            if(balance[j]._id == expense.paid_for[k].member_id){
+                                for( var l in balance[j].owes){
+                                    if(balance[j].owes[l]._id == expense.paid_by){
+                                        balance[j].owes[l].amount += amountPerFriend;
+                                        break;
+                                    }
+                                }
+                            }
 
+                        }
                     }
                 }
+
             }
 
-        }
+            // for( var i in balance){
+            //     for ( var j in balance[i].owes){
+            //         if(balance[i].owes[j].amount < 0){
+            //             balance[i].owes[j].amount = 0;
+            //         }
+            //     }
+            // }
+            console.log(JSON.stringify(balance))
+            return balance;
+        })
 
-
-        for( var i in balance){
-            for ( var j in balance[i].owes){
-                if(balance[i].owes[j].amount < 0){
-                    balance[i].owes[j].amount = 0;
-                }
-            }
-        }
-        return balance;
 
     };
+
+    $scope.calculatedBal = $scope.calculateBal()
+
+    $scope.testfunc = function() {
+        return "qwert"
+    }
 
 
     $scope.deleteSharedExpense = function(id){

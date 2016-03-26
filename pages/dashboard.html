@@ -10,6 +10,8 @@
     {{ member.firstname | uppercase }}
   </div>
   <h2>Balance</h2>
+  <span>{{ "fgd"}}</span>
+  
 <div ng-repeat="b in balance">
     <div ng-repeat="owe in b.owes">
         <span ng-if="owe.amount > 0"><strong>{{b.name}}</strong> owes <strong>$ {{owe.amount | number:2}}</strong> to <strong>{{owe.name}}</strong>.</span>
@@ -91,7 +93,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" ng-click="splitExpense()"data-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-primary" ng-click="splitExpense() "data-dismiss="modal">Submit</button>
             </div>
         </div>
     </div>
@@ -110,3 +112,4 @@
         </div>
     </div>
 </div>
+<span>{{calculatedBal}}</span>
